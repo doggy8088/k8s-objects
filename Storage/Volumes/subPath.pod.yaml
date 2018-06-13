@@ -1,0 +1,33 @@
+# Sometimes, it is useful to share one volume for multiple uses in a single Pod. 
+
+# The volumeMounts.subPath property can be used to specify a sub-path 
+# inside the referenced volume instead of its root.
+
+# Here is an example of a Pod with a LAMP stack (Linux Apache Mysql PHP) using a single, shared volume.
+# The HTML contents are mapped to its html folder, and the databases will be stored in its mysql folder:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-lamp-site
+spec:
+    containers:
+    - name: mysql
+      image: mysql
+      env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: "rootpasswd" 
+      volumeMounts:
+      - mountPath: /var/lib/mysql
+        name: site-data
+        subPath: mysql
+    - name: php
+      image: php:7.0-apache
+      volumeMounts:
+      - mountPath: /var/www/html
+        name: site-data
+        subPath: html
+    volumes:
+    - name: site-data
+      persistentVolumeClaim:
+        claimName: my-lamp-site-data

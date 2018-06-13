@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  password: "123456"
+metadata:
+  name: idpw
+  namespace: default

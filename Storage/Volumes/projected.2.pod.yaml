@@ -1,0 +1,34 @@
+# Volumes - Kubernetes
+# https://kubernetes.io/docs/concepts/storage/volumes/
+
+# A projected volume maps several existing volume sources into the same directory.
+
+# Example Pod with multiple secrets with a non-default permission mode set.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-test
+spec:
+  containers:
+  - name: container-test
+    image: busybox
+    volumeMounts:
+    - name: all-in-one
+      mountPath: "/projected-volume"
+      readOnly: true
+  volumes:
+  - name: all-in-one
+    projected:
+      sources:
+      - secret:
+          name: mysecret
+          items:
+            - key: username
+              path: my-group/my-username
+      - secret:
+          name: mysecret2
+          items:
+            - key: password
+              path: my-group/my-password
+              mode: 511
